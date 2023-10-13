@@ -1,52 +1,67 @@
 import com.github.britooo.looca.api.core.Looca;
 import com.github.britooo.looca.api.group.rede.Rede;
+import com.github.britooo.looca.api.group.rede.RedeInterfaceGroup;
+import oshi.SystemInfo;
+
+import java.util.List;
+
 public class PlacaDeRede {
+
     private String hostName;
-    private String nomeDeDominio;
-    private String[] servidoresDNS;
-    private String texto;
-    String  captarPlacaDeRede() {
-        Looca looca= new Looca();
+    private String numIpv4;
+    private Long bytesRecebidos;
+    private Long bytesEnviados;
+
+
+    public void captarPlacaDeRede() {
+        Looca looca = new Looca();
         Rede rede = looca.getRede();
-        texto = String.valueOf(rede.getParametros());
-        return texto;
-    }
-    public void exibirRelatorio(String texto) {
-        String[] linhas = texto.split("\n");
-        for (String linha : linhas) {
-            if (linha.startsWith("Hostname:")) {
-                hostName = linha.substring("Hostname: ".length()).trim();
-            } else if (linha.startsWith("Nome de domínio:")) {
-                nomeDeDominio = linha.substring("Nome de domínio: ".length()).trim();
-            } else if (linha.startsWith("Servidores DNS:")) {
-                String dnsInfo = linha.substring("Servidores DNS: ".length()).trim();
-                // Remova os colchetes e separe os IPs por vírgula e espaço
-                dnsInfo = dnsInfo.substring(1, dnsInfo.length() - 1);
-                servidoresDNS = dnsInfo.split(", ");
-                for (int i = 0; i < servidoresDNS.length; i++) {
-                    servidoresDNS[i] = servidoresDNS[i].trim();
-                }
-            }
-        }
-        System.out.println("HostName: " + hostName);
-        System.out.println("Nome do Domínio: " + nomeDeDominio);
-        System.out.print("Servidores DNS: ");
-        if (servidoresDNS != null) {
-            for (String dns : servidoresDNS) {
-                System.out.print(dns + " ");
+        RedeInterfaceGroup rede2 =new RedeInterfaceGroup(new SystemInfo());
+        hostName = rede.getParametros().getHostName();
+        for (int i = 0; i < rede2.getInterfaces().size(); i++) {
+            if (rede2.getInterfaces().get(i).getEnderecoIpv4().size() > 0){
+                numIpv4 = rede2.getInterfaces().get(i).getEnderecoIpv4().get(0);
+                bytesRecebidos = rede2.getInterfaces().get(i).getBytesRecebidos();
+                bytesEnviados= rede2.getInterfaces().get(i).getBytesEnviados();
+
             }
         }
     }
+
     public String getHostName() {
         return hostName;
     }
-    public String getNomeDeDominio() {
-        return nomeDeDominio;
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
     }
-    public String[] getServidoresDNS() {
-        return servidoresDNS;
+
+    public String getNumIpv4() {
+        return numIpv4;
     }
-    public String getTexto() {
-        return texto;
+
+    public void setNumIpv4(String numIpv4) {
+        this.numIpv4 = numIpv4;
+    }
+
+    public Long getBytesRecebidos() {
+        return bytesRecebidos;
+    }
+
+    public void setBytesRecebidos(Long bytesRecebidos) {
+        this.bytesRecebidos = bytesRecebidos;
+    }
+
+    public Long getBytesEnviados() {
+        return bytesEnviados;
+    }
+
+    public void setBytesEnviados(Long bytesEnviados) {
+        this.bytesEnviados = bytesEnviados;
+    }
+
+    public static void main(String[] args) {
+        RedeInterfaceGroup rede2 =new RedeInterfaceGroup(new SystemInfo());
+        System.out.println(rede2.getInterfaces().get(1).getEnderecoIpv4().size());
     }
 }
