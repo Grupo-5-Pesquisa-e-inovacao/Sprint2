@@ -10,7 +10,7 @@ public class DataBase {
         String url;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            url = "jdbc:mysql://containerCamel:3306/CamelTech?user=aidmin&password=senhaDificil235813";
+            url = "jdbc:mysql://localhost:3306/CamelTech?user=aidmin&password=senhaDificil235813";
             conexao = DriverManager.getConnection(url);
 
         } catch (SQLException error) {
